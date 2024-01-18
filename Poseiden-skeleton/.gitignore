@@ -2,5 +2,9 @@
 /.project
 .git
 /target
-Poseiden-skeleton/.settings/
 /.settings
+.DS_Store
+/.DS_Store
+../../.DS_Store
+/src/.DS_Store
+/.factorypath
