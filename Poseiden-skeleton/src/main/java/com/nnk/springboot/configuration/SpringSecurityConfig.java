@@ -33,7 +33,9 @@ public class SpringSecurityConfig {
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		return http.authorizeHttpRequests(auth -> {
-			auth.requestMatchers("/login").permitAll().anyRequest().authenticated();
+			auth.requestMatchers("/login").permitAll();
+			auth.requestMatchers("/user/**").hasAnyRole("ADMIN");
+			auth.anyRequest().authenticated();
 		}).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
 				.formLogin(form -> form.loginPage("/login").permitAll().defaultSuccessUrl("/"))
 				.logout(logout -> logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))

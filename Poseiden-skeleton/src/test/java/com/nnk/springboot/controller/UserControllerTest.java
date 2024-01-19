@@ -18,18 +18,19 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.nnk.springboot.controllers.UserController;
 import com.nnk.springboot.domain.MyUser;
 import com.nnk.springboot.service.MyUserService;
 
-@WebMvcTest(UserController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class UserControllerTest {
 
 	@Autowired
@@ -39,7 +40,7 @@ class UserControllerTest {
 	private MyUserService myUserService;
 
 	@Test
-	@WithMockUser(username = "john@test.com")
+	@WithMockUser(username = "john@test.com", roles = "ADMIN")
 	void testHome() throws Exception {
 		MyUser user = new MyUser();
 		List<MyUser> users = new ArrayList<>();
@@ -54,7 +55,21 @@ class UserControllerTest {
 	}
 
 	@Test
-	@WithMockUser(username = "john@test.com")
+	@WithMockUser(username = "john@test.com", roles = "USER")
+	void testHomeForbidden() throws Exception {
+		MyUser user = new MyUser();
+		List<MyUser> users = new ArrayList<>();
+		users.add(user);
+
+		when(myUserService.getAllUsers(any(Model.class))).thenReturn("user/list");
+
+		mockMvc.perform(get("/user/list").flashAttr("users", users)).andExpect(status().isForbidden());
+
+		verify(myUserService, times(0)).getAllUsers(any(Model.class));
+	}
+
+	@Test
+	@WithMockUser(username = "john@test.com", roles = "ADMIN")
 	void testAddUserForm() throws Exception {
 		MyUser user = new MyUser();
 
@@ -67,7 +82,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	@WithMockUser(username = "john@test.com")
+	@WithMockUser(username = "john@test.com", roles = "ADMIN")
 	void testValidate() throws Exception {
 		MyUser user = new MyUser();
 		user.setUsername("username");
@@ -85,7 +100,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	@WithMockUser(username = "john@test.com")
+	@WithMockUser(username = "john@test.com", roles = "ADMIN")
 	void testValidateWithErrors() throws Exception {
 		MyUser user = new MyUser();
 
@@ -96,7 +111,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	@WithMockUser(username = "john@test.com")
+	@WithMockUser(username = "john@test.com", roles = "ADMIN")
 	void testShowUpdateForm() throws Exception {
 		MyUser user = new MyUser();
 
@@ -109,7 +124,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	@WithMockUser(username = "john@test.com")
+	@WithMockUser(username = "john@test.com", roles = "ADMIN")
 	void testUpdateUser() throws Exception {
 		MyUser user = new MyUser();
 		user.setUsername("username");
@@ -127,7 +142,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	@WithMockUser(username = "john@test.com")
+	@WithMockUser(username = "john@test.com", roles = "ADMIN")
 	void testUpdateUserWithErrors() throws Exception {
 		MyUser user = new MyUser();
 
@@ -138,7 +153,7 @@ class UserControllerTest {
 	}
 
 	@Test
-	@WithMockUser(username = "john@test.com")
+	@WithMockUser(username = "john@test.com", roles = "ADMIN")
 	void testDeleteUser() throws Exception {
 		when(myUserService.deleteUser(eq(1), any(RedirectAttributes.class))).thenReturn("redirect:/user/list");
 
