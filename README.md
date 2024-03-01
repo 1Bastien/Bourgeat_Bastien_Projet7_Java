@@ -15,4 +15,20 @@ Cependant, il manque les contrôleurs pour ces entités. L'objectif est d'implé
 - **Thymleaf**
 - **Jacoco & JUnit**
 
+## Prérequis
+
+- Java
+- Maven
+
+## Installation
+
+```bash
+git clone https://github.com/1Bastien/Bourgeat_Bastien_Projet7_Java
+```
+```
+cd Bourgeat_Bastien_Projet7_Java
+```
+```
+mvn spring-boot:run
+```
 
